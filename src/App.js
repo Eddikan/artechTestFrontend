@@ -1,25 +1,31 @@
-import logo from './logo.svg';
+// src/App.js
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import ProjectList from './ProjectList';
+import ProjectDetail from './ProjectDetail';
+
+const App = () => {
+    const [projects, setProjects] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch('https://artech-test-backend.vercel.app/projects');
+            const data = await response.json();
+            setProjects(data);
+        };
+        fetchData();
+    }, []);
+
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<ProjectList projects={projects} />} />
+                <Route path="/projects/:id" element={<ProjectDetail projects={projects} />} />
+            </Routes>
+        </Router>
+    );
+};
 
 export default App;
